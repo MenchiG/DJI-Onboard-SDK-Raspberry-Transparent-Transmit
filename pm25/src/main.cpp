@@ -3,6 +3,7 @@
  *
  *  Created on: Oct 10, 2015
  *      Author: Menchi Guo
+ *      E-mail: menchi.guo@gmail.com
  */
 
 #include <stdio.h>

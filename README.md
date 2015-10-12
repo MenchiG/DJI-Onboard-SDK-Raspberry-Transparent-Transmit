@@ -25,20 +25,25 @@ Finially, the data shows on my phone or pad which is connected with M100's contr
 ## Setup
 
 ### 1. Connect Pi and M100  
+As we know, RPi has a serial port with 3.3V. We can use it directly, so there is no need to purchase a USB-TTL model.  
 
-   As we know, RPi has a serial port with 3.3V. We can use it directly, so there is no need to purchase a USB-TTL model.  
+Here is the definition of M100's serial port.   
+<center> ![m100_serial_port](pic/M100.jpg)  </center>
 
-   Here is the definition of M100's serial port.   
-![m100_serial_port](pic/M100.jpg)  
    And this is the definition of RPI's serial port.
-![rpi_serial_port](pic/raspberry.png)  
+<center> ![rpi_serial_port](pic/raspberry.png)  </center>
+   
 
-   |M100|RPin| 
-   |----|----|  
-   |RXD  | Tx  (PIN 08)| 
-   |TXD  | Rx  (PIN 10)| 
-   |GND | GND (PIN 06)|
+|M100|RPin| 
+|----|----|  
+|RXD  | Tx  (PIN 08)| 
+|TXD  | Rx  (PIN 10)| 
+|GND | GND (PIN 06)|
 
+It looks like this 
+<div align="center">
+<img src="pic/connect.jpg" alt="connect" height="400">
+</div>
    However, the serial port of RPi is designed for kernel, therefore we need to configure it.  
    >1. **edit cmdline.txt**  `sudo nano /boot/cmdline.txt`  
    change   
@@ -62,16 +67,68 @@ Finially, the data shows on my phone or pad which is connected with M100's contr
 
 ### 3. Code (DJI Onboard SDK Part)
 
-  I use `DJI_LIB` to develop the Onboard Part. All I need to do is call relative function to init Onboard SDK and send my data.
+I use `DJI_LIB` to develop the Onboard Part. All I need to do is call relative function to init Onboard SDK and send my data.
 
-  BTW: you can find `DJI_LIB` in Samples of DJI Onboard SDK. 
+>BTW: you can find `DJI_LIB` in Samples of DJI Onboard SDK. 
 
-  Here are some tips for coding.
+1\. Modify `Makefile` to add `DJI_LIB` in your progject. (You can refer to `Makefile` in this project)  
 
-  +  After call `Pro_Hw_Setup("/dev/ttyAMA0", 230400)` to open serial port, do not forget call `DJI_Pro_Setup(NULL);`.
-  +  If you want to use Transparent-Transmission to send data to mobile device, activation is nescessary. Both level 1 & 2 are ok. (I have hidden my app_key & app_id, just edit it into yours)
-  +  Add `DJI_LIB` files name into `Makefile` to ensure they will be compiled and linked correctly.
-  +  `pm25.cpp` is the interface of PM2.5 sensor, which is a serial port. 
+2\. Init Onboard SDK  
+
+~~~c
+if(Pro_Hw_Setup("/dev/ttyAMA0", 230400) < 0)      /* Open RPi <-> DJI Serial Port */
+{
+    perror( "UAV Serial Port Open ERROR" );
+    return 0;
+}
+DJI_Pro_Setup(NULL);
+~~~
+
+3\. Init PM25  (Change it into your sensor interface)
+
+~~~c
+if(init_pm25("/dev/ttyUSB0", 2400) <0)            /* Open RPi <-> PM25 Serial Port */
+{
+    perror( "PM25 Serial Port Open ERROR" );
+    return 0;
+}
+~~~  
+
+4\. Activation
+  Just need to edit `key_buf`, `app_id` and `app_level`.
+  For Transparent-Transmission, either level 1 or level 2 is ok.
+
+~~~c
+  /* activation */
+activate_data_t user_act_data; 
+
+char key_buf[65] = "Input your app_key ";   /* Input your app_key */
+char app_bundle_id[32] = "1234567890";
+
+user_act_data.app_id = Input your app_id;                     /* Input your app_id */
+user_act_data.app_api_level = Input your app_level;                    /* Input your app_level */
+user_act_data.app_ver = 0x02030A00; 
+user_act_data.app_key = key_buf;  
+strcpy((char*)user_act_data.app_bundle_id, app_bundle_id);
+
+DJI_Pro_Activate_API(&user_act_data,NULL);
+~~~
+
+5\. Loop
+
+~~~c
+while(1)
+{
+    int nbyte;
+    nbyte = read_pm25(buffer, 1024); 
+    if (nbyte > 0) 
+    {
+        sdk_pure_transfer_hander((uint8_t*)buffer, nbyte);   /* Transparent-Transmit */
+        printf("%s", buffer);
+    } 
+    sleep(1);
+}
+~~~
 
 ### 4. Code (DJI Mobile SDK Part)
   TODO
@@ -83,6 +140,7 @@ Then execute the following cmd.
   `cd ../output`  
   `./pm25`  
 The terminal should be like this.
+
 ~~~
 Acttivation Successfully
 
@@ -95,5 +153,6 @@ Acttivation Successfully
 0.9,25.0,59.8
 [pure_transfer],send len 15 data 0.9,25.0,59.8
 ~~~
+
 Run the App by Mobile device.
 This is a sample App, but you can see the date has been received.
