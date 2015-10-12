@@ -40,7 +40,7 @@ Here is the definition of M100's serial port.
 |TXD  | Rx  (PIN 10)| 
 |GND | GND (PIN 06)|
 
-It looks like this 
+The connection looks like this.
 <div align="center">
 <img src="pic/connect.jpg" alt="connect" height="400">
 </div>
@@ -69,6 +69,8 @@ It looks like this
 
 I use `DJI_LIB` to develop the Onboard Part. All I need to do is call relative function to init Onboard SDK and send my data.
 
+`PM25.cpp` is interface of my PM2.5 sensor, developers can use yourselves code instead.
+
 >BTW: you can find `DJI_LIB` in Samples of DJI Onboard SDK. 
 
 1\. Modify `Makefile` to add `DJI_LIB` in your progject. (You can refer to `Makefile` in this project)  
@@ -94,9 +96,9 @@ if(init_pm25("/dev/ttyUSB0", 2400) <0)            /* Open RPi <-> PM25 Serial Po
 }
 ~~~  
 
-4\. Activation
-  Just need to edit `key_buf`, `app_id` and `app_level`.
-  For Transparent-Transmission, either level 1 or level 2 is ok.
+4\. Activation  
+  Just need to edit `key_buf`, `app_id` and `app_level`.  
+  For Transparent-Transmission, either level 1 or level 2 is ok.  
 
 ~~~c
   /* activation */
@@ -114,7 +116,9 @@ strcpy((char*)user_act_data.app_bundle_id, app_bundle_id);
 DJI_Pro_Activate_API(&user_act_data,NULL);
 ~~~
 
-5\. Loop
+5\. Loop  
+
+Get pm25 data and call sdk function to send it.  
 
 ~~~c
 while(1)
@@ -127,6 +131,17 @@ while(1)
         printf("%s", buffer);
     } 
     sleep(1);
+}
+~~~
+
+Transparent-Transmission handle
+
+~~~c
+int16_t sdk_pure_transfer_hander(uint8_t* pbuf, uint16_t len)    
+{                                                                                         
+    /* DJI_LIB */
+    DJI_Pro_App_Send_Data(0 , 0, MY_ACTIVATION_SET, 0xFE, pbuf, len,NULL,0,1); 
+    printf("[pure_transfer],send len %d data %s\n", len, pbuf);                                         
 }
 ~~~
 
