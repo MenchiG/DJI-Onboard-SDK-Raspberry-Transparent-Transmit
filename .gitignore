@@ -1,0 +1,4 @@
+*.o
+*~
+dji-raspberry.sublime-workspace
+dji-raspberry.sublime-project
