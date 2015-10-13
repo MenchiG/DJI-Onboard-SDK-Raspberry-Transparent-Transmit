@@ -151,13 +151,50 @@ int16_t sdk_pure_transfer_hander(uint8_t* pbuf, uint16_t len)
 The following code snippet shows you how to send and receive data.
 
 send data:
-  <div align="center">
-<img src="pic/send.png" alt="send data to your onboard device">
-</div>
+~~~java
+int16_t sdk_pure_transfer_hander(uint8_t* pbuf, uint16_t len)    
+{                                                                                         
+   if ("" != mSendOnBoardEdit.getText().toString()){
+                    DJIDrone.getDjiMC().sendDataToExternalDevice(mSendOnBoardEdit.getText().toString().getBytes(),new DJIExecuteResultCallback(){
+                        @Override
+                        public void onResult(DJIError result)
+                        {
+                            // TODO Auto-generated method stub
+                        }
+                    });
+                    Log.d(TAG, "Submit1");
+                }                                         
+}
+~~~
 
+
+~~~java
 receive data:
- <div align="center">
-<img src="pic/recv.png" alt="receive data from your onboard device" >
+mExtDevReceiveDataCallBack = new DJIMainControllerExternalDeviceRecvDataCallBack() {
+            @Override
+            public void onResult(final byte[] data)
+            {
+                // TODO Auto-generated method stub
+                StringBuffer sb = new StringBuffer();
+                sb.append(getString(R.string.external_device_recv_data)).append("\n");
+                sb.append(new String(data)).append("\n");
+
+                McRecvOnBoard = sb.toString();
+
+                SelectDroneTypeActivity.this.runOnUiThread(new Runnable(){
+
+                    @Override
+                    public void run()
+                    {
+                        mRecvTextView.setText(McRecvOnBoard);
+                    }
+                });
+            }
+        };
+        //设置回调接口
+        DJIDrone.getDjiMC().setExternalDeviceRecvDataCallBack(mExtDevReceiveDataCallBack);
+~~~
+
 
 ### 5. Compile & Run  
 copy `pm25` folder into your Pi.
