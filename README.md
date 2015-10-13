@@ -148,7 +148,7 @@ int16_t sdk_pure_transfer_hander(uint8_t* pbuf, uint16_t len)
 ### 4. Code (DJI Mobile SDK Part)
   Import the DJI_SDK_Android_Transparent_Trasmit code tu your Android studio or Eclipes.
 
-The following code snippet shows you how to send and receive data.
+The following code shows you how to send and receive data.
 
 send data:
 ~~~java
@@ -167,9 +167,8 @@ int16_t sdk_pure_transfer_hander(uint8_t* pbuf, uint16_t len)
 }
 ~~~
 
-
-~~~java
 receive data:
+~~~java
 mExtDevReceiveDataCallBack = new DJIMainControllerExternalDeviceRecvDataCallBack() {
             @Override
             public void onResult(final byte[] data)
