@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Get Start</string>
+    <string name="camera_connection_ok">Connected</string>
+    <string name="camera_connection_break">Disconnect</string>
+    
+    <!-- Select Drone Type Activity -->
+    <string name="title_activity_select_drone">SelectDroneTypeActivity</string>
+    <string name="drone_type_title_p2v">Phantom 2 Vision/Phantom 2 Vision+</string>
+    <string name="drone_type_desc_p2v">showing how to use the sdk interface for p2v/p2v+</string>
+    <string name="drone_type_title_inspire1">Inspire 1/Phantom 3 Professional</string>
+    <string name="drone_type_desc_inspire1">showing how to use the sdk interface for inspire1/Phantom 3 Professional</string>
+    <string name="drone_type_title_p3s">Phantom 3 Advanced</string>
+    <string name="drone_type_desc_p3s">showing how to use the sdk interface for Phantom 3 Advanced</string>
+    <string name="drone_type_title_m100">Matrice 100</string>
+    <string name="drone_type_desc_m100">showing how to use the sdk interface for Matrice 100</string>
+     
+    <!-- Main Activity -->
+    <string name="press_again_exit">Press again to exit application</string>
+    <string name="demo_title_preview">Video Preview</string>
+    <string name="demo_desc_preview">show the camera video preview</string>
+    <string name="demo_title_camera_protocol">Camera Protocol</string>
+    <string name="demo_desc_camera_protocol">test the camera protocol</string>
+    <string name="demo_activation_message_title">Activation Message</string>
+    <string name="demo_activation_error">Activation Error: </string>
+    <string name="demo_activation_error_code">Error Code: </string>
+    
+    <!-- Camera Protocol Demo Activity -->
+    <string name="title_activity_camera_protocol_demo">CameraProtocolDemoActivity</string>
+    <string name="camera_start_take_photo">Take Photo</string>
+    <string name="external_device_recv_data">a</string>
+
+</resources>
