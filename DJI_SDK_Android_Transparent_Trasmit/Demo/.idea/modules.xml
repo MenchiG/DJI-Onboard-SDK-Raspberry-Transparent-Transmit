@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../Lib/DJI-SDK-LIB/DJI-SDK-LIB.iml" filepath="$PROJECT_DIR$/../Lib/DJI-SDK-LIB/DJI-SDK-LIB.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Get_Start/Get_Start.iml" filepath="$PROJECT_DIR$/Get_Start/Get_Start.iml" />
+    </modules>
+  </component>
+</project>
+

@@ -1,0 +1,87 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/my_content_view"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/dark"
+    android:keepScreenOn="true" >
+
+    <RelativeLayout
+        android:id="@+id/surfaceView_Rl_02"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="0dp">
+
+        <dji.sdk.widget.DjiGLSurfaceView
+            android:id="@+id/DjiSurfaceView_02"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:background="@color/black_overlay">
+
+
+
+        <TextView
+            android:id="@+id/ConnectStateMCTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="@android:color/white"
+            android:text=""
+            android:textSize="21sp" />
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:id="@+id/MCOnBoardRecvScrollView"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:scrollbars="vertical"
+        android:layout_marginLeft="20dp"
+        android:layout_centerVertical="true"
+        android:background="@drawable/selector_button"
+        android:fillViewport="false">
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="5dp"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/MCOnBoardRecv"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:text="@string/external_device_recv_data"
+                android:layout_centerInParent="true"
+                android:textSize="14sp"
+                />
+        </RelativeLayout>
+    </ScrollView>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="50dp"
+        android:orientation="vertical">
+        <EditText
+            android:id="@+id/MCOnBoardSendEdit"
+            android:layout_width="150dp"
+            android:layout_height="35dp"/>
+        <Button
+            android:id="@+id/MCOnBoardSendBtn"
+            android:layout_width="70dp"
+            android:layout_height="35dp"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@id/MCOnBoardSendEdit"
+            android:text="submit"
+            android:textSize="14sp" />
+    </RelativeLayout>
+
+
+</RelativeLayout>
