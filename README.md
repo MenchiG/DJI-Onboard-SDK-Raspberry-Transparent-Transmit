@@ -146,15 +146,19 @@ int16_t sdk_pure_transfer_hander(uint8_t* pbuf, uint16_t len)
 ~~~
 
 ### 4. Code (DJI Mobile SDK Part)
-  Import the DJI_SDK_Android_Transparent_Trasmit code tu your Android studio or Eclipes.The app interface is shown:
+  Import the DJI_SDK_Android_Transparent_Trasmit code tu your Android studio or Eclipes.
+
+The following code snippet shows you how to send and receive data.
+
+send data:
   <div align="center">
-<img src="pic/send.png" alt="send data to your onboard device" height="400">
+<img src="pic/send.png" alt="send data to your onboard device">
 </div>
-  <div align="center">
-<img src="pic/send.png" alt="send data to your onboard device" height="400">
-</div>
+
+receive data:
  <div align="center">
-<img src="pic/recv.png" alt="receive data from your onboard device" height="400">
+<img src="pic/recv.png" alt="receive data from your onboard device" >
+
 ### 5. Compile & Run  
 copy `pm25` folder into your Pi.
 Then execute the following cmd. 
