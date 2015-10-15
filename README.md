@@ -217,5 +217,6 @@ Acttivation Successfully
 [pure_transfer],send len 15 data 0.9,25.0,59.8
 ~~~
 
-Run the App by Mobile device.
+Run the App by Mobile device.  
 This is a sample App, but you can see the date has been received.
+<center> ![app](pic/app.jpg)  </center>
