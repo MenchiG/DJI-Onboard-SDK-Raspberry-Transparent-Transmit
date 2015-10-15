@@ -101,19 +101,23 @@ if(init_pm25("/dev/ttyUSB0", 2400) <0)            /* Open RPi <-> PM25 Serial Po
   For Transparent-Transmission, either level 1 or level 2 is ok.  
 
 ~~~c
-  /* activation */
-activate_data_t user_act_data; 
+activate_data_t user_act_data;
 
-char key_buf[65] = "Input your app_key ";   /* Input your app_key */
-char app_bundle_id[32] = "1234567890";
+void activation()
+{
 
-user_act_data.app_id = Input your app_id;                     /* Input your app_id */
-user_act_data.app_api_level = Input your app_level;                    /* Input your app_level */
-user_act_data.app_ver = 0x02030A00; 
-user_act_data.app_key = key_buf;  
-strcpy((char*)user_act_data.app_bundle_id, app_bundle_id);
+    char key_buf[65] = "input your key";   /* Input your app_key */
+    char app_bundle_id[32] = "1234567890";
 
-DJI_Pro_Activate_API(&user_act_data,NULL);
+    user_act_data.app_id = id;                     /* Input your app_id */
+    user_act_data.app_api_level = level;                    /* Input your app_level */
+    user_act_data.app_ver = 0x02030A00; 
+    user_act_data.app_key = key_buf;  
+    strcpy((char*)user_act_data.app_bundle_id, app_bundle_id);
+
+    DJI_Pro_Activate_API(&user_act_data,cb_fun);
+}
+
 ~~~
 
 5\. Loop  
@@ -121,29 +125,68 @@ DJI_Pro_Activate_API(&user_act_data,NULL);
 Get pm25 data and call sdk function to send it.  
 
 ~~~c
-while(1)
-{
-    int nbyte;
-    nbyte = read_pm25(buffer, 1024); 
-    if (nbyte > 0) 
+    while(1)
     {
-        sdk_pure_transfer_hander((uint8_t*)buffer, nbyte);   /* Transparent-Transmit */
-        printf("%s", buffer);
-    } 
-    sleep(1);
-}
+        if(run_flag)
+        {
+            int nbyte;
+            nbyte = read_pm25(buffer, 1024);
+            if (nbyte > 0) 
+            {
+                transparent_transission_send((uint8_t*)buffer, nbyte);
+                //printf("%s", buffer);
+            } 
+        }
+        sleep(1);
+    }
 ~~~
 
-Transparent-Transmission handle
+Transparent-Transmission Send
 
 ~~~c
-int16_t sdk_pure_transfer_hander(uint8_t* pbuf, uint16_t len)    
-{                                                                                         
-    /* DJI_LIB */
-    DJI_Pro_App_Send_Data(0 , 0, MY_ACTIVATION_SET, 0xFE, pbuf, len,NULL,0,1); 
-    printf("[pure_transfer],send len %d data %s\n", len, pbuf);                                         
+void transparent_transission_send(uint8_t* pbuf, uint16_t len)
+{   
+    DJI_Pro_App_Send_Data(0 , 0, MY_ACTIVATION_SET, 0xFE, pbuf, len,NULL,0,1);                                        
+    //printf("[send_data],send len %d data %s\n", len, pbuf);
 }
+
 ~~~
+
+Transparent-Transmission Receive  
+First, register Transparent-Transmission callback function. 
+~~~c
+DJI_Pro_Register_Transparent_Transmission_Callback(transparent_transission_receive);
+~~~
+
+Then, implement the callback function.  
+Here is a simple interactive cmd list.  
+
+~~~c
+void transparent_transission_receive(unsigned char *buf,unsigned char len)
+{
+    unsigned char cmd;
+    cmd = buf[0];
+
+   // printf("[recv_data],send len %d data %s\n", len, buf);
+
+    switch(cmd)
+    {
+        case 'a':   
+            activation();
+            break;
+        case 'b':
+            run_flag = true;
+            break;
+        case 'c':
+            run_flag = false;
+            break;
+        default:
+            break;
+    }
+}
+
+~~~
+
 
 ### 4. Code (DJI Mobile SDK Part)
   Import the DJI_SDK_Android_Transparent_Trasmit code tu your Android studio or Eclipes.

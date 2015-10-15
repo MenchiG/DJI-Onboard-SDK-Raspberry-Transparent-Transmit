@@ -16,63 +16,111 @@
 #include "DJI_LIB/DJI_Pro_Config.h"
 #include "DJI_LIB/DJI_Pro_Rmu.h"
 
-
-int16_t sdk_pure_transfer_hander(uint8_t* pbuf, uint16_t len)    
-{                                                                                                                                                                                        
-    /* DJI_LIB */
-    DJI_Pro_App_Send_Data(0 , 0, MY_ACTIVATION_SET, 0xFE, pbuf, len,NULL,0,1);          
-
-    printf("[pure_transfer],send len %d data %s\n", len, pbuf);                                                                                                                         
-}
-
 int init_pm25(const char *device, int baudrate);
 int read_pm25(char *buf, int len);
 void close_pm25();
 
 char buffer[1024];
 
+bool run_flag = false;
+
+
+
+
+void transparent_transission_send(uint8_t* pbuf, uint16_t len)
+{    //透传发送！！！
+    DJI_Pro_App_Send_Data(0 , 0, MY_ACTIVATION_SET, 0xFE, pbuf, len,NULL,0,1);                                        
+    //printf("[send_data],send len %d data %s\n", len, pbuf);
+}
+
+
+void cb_fun (unsigned short result)
+{
+    char result_tmp[10];
+    sprintf(result_tmp, "%d", result);
+    transparent_transission_send((uint8_t*)&result_tmp, 4);
+}
+
+
+activate_data_t user_act_data; 
+void activation()
+{
+
+    char key_buf[65] = "input your key";   /* Input your app_key */
+    char app_bundle_id[32] = "1234567890";
+
+    user_act_data.app_id = id;                     /* Input your app_id */
+    user_act_data.app_api_level = level;                    /* Input your app_level */
+    user_act_data.app_ver = 0x02030A00; 
+    user_act_data.app_key = key_buf;  
+    strcpy((char*)user_act_data.app_bundle_id, app_bundle_id);
+
+    DJI_Pro_Activate_API(&user_act_data,cb_fun);
+}
+
+
+
+void transparent_transission_receive(unsigned char *buf,unsigned char len)
+{
+    unsigned char cmd;
+    cmd = buf[0];
+
+   // printf("[recv_data],send len %d data %s\n", len, buf);
+
+    switch(cmd)
+    {
+        case 'a':   
+            activation();
+            break;
+        case 'b':
+            run_flag = true;
+            break;
+        case 'c':
+            run_flag = false;
+            break;
+        default:
+            break;
+    }
+}
+
+
+
 int main()
 {
-    if(Pro_Hw_Setup("/dev/ttyAMA0", 230400) < 0)      /* Open RPi <-> DJI Serial Port */
+    if(Pro_Hw_Setup("/dev/ttyAMA0", 230400) < 0)
     {
         perror( "UAV Serial Port Open ERROR" );
         return 0;
     }
-    DJI_Pro_Setup(NULL);                              /* Setup DJI SDK */
+    DJI_Pro_Setup(NULL);
     
-    if(init_pm25("/dev/ttyUSB1", 2400) <0)            /* Open RPi <-> PM25 Serial Port */
+    if(init_pm25("/dev/ttyUSB0", 2400) <0)
     {
         perror( "PM25 Serial Port Open ERROR" );
         return 0;
     }
 
-    /* activation */
-    activate_data_t user_act_data; 
-
-    char key_buf[65] = "Input your app_key ";   /* Input your app_key */
-    char app_bundle_id[32] = "1234567890";
-
-    user_act_data.app_id = Input your app_id;                     /* Input your app_id */
-    user_act_data.app_api_level = Input your app_level;                    /* Input your app_level */
-    user_act_data.app_ver = 0x02030A00; 
-    user_act_data.app_key = key_buf;  
-    strcpy((char*)user_act_data.app_bundle_id, app_bundle_id);
-
-    DJI_Pro_Activate_API(&user_act_data,NULL);
+    DJI_Pro_Register_Transparent_Transmission_Callback(transparent_transission_receive);
 
 
-
+    
     while(1)
     {
-        int nbyte;
-        nbyte = read_pm25(buffer, 1024);          
-        if (nbyte > 0) 
+
+
+        if(run_flag)
         {
-            sdk_pure_transfer_hander((uint8_t*)buffer, nbyte);   /* Transparent-Transmit */
-            printf("%s", buffer);
-        } 
+            int nbyte;
+            nbyte = read_pm25(buffer, 1024);
+            if (nbyte > 0) 
+            {
+                transparent_transission_send((uint8_t*)buffer, nbyte);
+                //printf("%s", buffer);
+            } 
+        }
 
         sleep(1);
+
     }
     close_pm25();
 }
