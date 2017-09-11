@@ -28,10 +28,10 @@ Finially, the data shows on my phone or pad which is connected with M100's contr
 As we know, RPi has a serial port with 3.3V. We can use it directly, so there is no need to purchase a USB-TTL model.  
 
 Here is the definition of M100's serial port.   
-<center> ![m100_serial_port](pic/M100.jpg)  </center>
+![m100_serial_port](pic/M100.jpg)
 
-   And this is the definition of RPI's serial port.
-<center> ![rpi_serial_port](pic/raspberry.png)  </center>
+And this is the definition of RPI's serial port.
+![rpi_serial_port](pic/raspberry.png)
    
 
 |M100|RPin| 
@@ -46,14 +46,17 @@ The connection looks like this.
 </div>
    However, the serial port of RPi is designed for kernel, therefore we need to configure it. 
    
-   >1. **edit cmdline.txt**  `sudo nano /boot/cmdline.txt`  
+   1. **edit cmdline.txt**  
+   >`sudo nano /boot/cmdline.txt`  
    change   
    `dwc_otg.lpm_enable=0 console=ttyAMA0,115200 kgdboc=ttyAMA0,115200 console=tty1 root=/dev/mmcblk0p2 rootfstype=ext4 elevator=deadline rootwait`    
    into  
    `dwc_otg.lpm_enable=0 console=tty1 root=/dev/mmcblk0p2 rootfstype=ext4 elevator=deadline rootwait`
 
-   >2. **edit inittab** `sudo nano /etc/inittab`  
-   Invaild the last line `#T0:23:respawn:/sbin/getty -L ttyAMA0 115200 vt100`
+   2. **edit inittab** 
+   >`sudo nano /etc/inittab`  
+   Invaild the last line 
+   `#T0:23:respawn:/sbin/getty -L ttyAMA0 115200 vt100`
 
    In addition, to use this serial port within 230400 baudrate, we need to change uart clock.
    > **edit config.txt** `sudo nano /boot/config.txt`  
@@ -263,4 +266,5 @@ Acttivation Successfully
 
 Run the App by Mobile device.  
 This is a sample App, but you can see the date has been received.
-<center> ![app](pic/app.jpg)  </center>
+
+![app](pic/app.jpg)
