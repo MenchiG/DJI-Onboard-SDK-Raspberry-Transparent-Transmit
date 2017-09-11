@@ -44,7 +44,8 @@ The connection looks like this.
 <div align="center">
 <img src="pic/connect.jpg" alt="connect" height="400">
 </div>
-   However, the serial port of RPi is designed for kernel, therefore we need to configure it.  
+   However, the serial port of RPi is designed for kernel, therefore we need to configure it. 
+   
    >1. **edit cmdline.txt**  `sudo nano /boot/cmdline.txt`  
    change   
    `dwc_otg.lpm_enable=0 console=ttyAMA0,115200 kgdboc=ttyAMA0,115200 console=tty1 root=/dev/mmcblk0p2 rootfstype=ext4 elevator=deadline rootwait`    
